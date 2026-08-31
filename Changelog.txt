@@ -1,5 +1,29 @@
 VEX CAD Library V1.1.1 + 2026-08-30 catalogue refresh
 
+2026-08-31 - VEX-Library-2026 converted to the SolidWorks 2026 file format
+ Every file under VEX-Library-2026/ is now saved at file version 19000
+ (SolidWorks 2026). The library had been at 14000 (SolidWorks 2021).
+
+   315 files converted
+   377 already written by 2026 and left alone - the generated per-length
+       parts and the STEP conversions, which 2026 had already produced
+     0 failures
+
+ THIS IS ONE WAY. SolidWorks cannot open a file newer than itself and there
+ is no downgrade, so a 2021-2025 seat can no longer open anything under
+ VEX-Library-2026/. The six original folders at the repository root were NOT
+ converted and remain at 14000, so they still open in SolidWorks 2021+.
+
+ Added:
+  - Tools/src/SwUpgradeVersion.cs - the converter. Reads each file's saved
+    version with ISldWorks::VersionHistory, which does not open the
+    document, and skips anything already current, so it never rewrites a
+    file for nothing and a re-run is cheap. Parts are done before
+    assemblies so each part is upgraded once on its own, rather than as a
+    side effect of saving an assembly that references it.
+  - Tools/src/SwProbeVersion.cs - prints the saved-version history of a file.
+
+
 2026-08-31 - Per-length files for C-Channel and Angle
  The library keeps each cut-to-length metal as one part with a configuration
  per hole count. Exploded those into standalone single-configuration parts,
