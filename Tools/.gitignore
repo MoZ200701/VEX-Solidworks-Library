@@ -1,0 +1,12 @@
+# Build outputs and the SolidWorks interop assemblies are not committed:
+# the DLLs ship with SolidWorks and are not ours to redistribute, and the
+# .exe files are built from src/. To rebuild, copy the two assemblies out of
+# your SolidWorks install and run, from this folder:
+#
+#   csc -out:SwExplodeConfigs.exe \
+#       -r:SolidWorks.Interop.sldworks.dll -r:SolidWorks.Interop.swconst.dll \
+#       src\SwExplodeConfigs.cs
+#
+# (csc lives in C:\Windows\Microsoft.NET\Framework64\v4.0.30319\)
+*.exe
+SolidWorks.Interop.*.dll

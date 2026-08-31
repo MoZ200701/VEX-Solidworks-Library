@@ -1,0 +1,10 @@
+# The repository root sends *.SLDPRT through Git LFS. This tree deliberately
+# does not: these parts are stored as ordinary git blobs so they consume no
+# LFS quota. Every file here is well under GitHub's 100 MB per-file limit.
+#
+# "!attr" makes the attribute unspecified, overriding the root .gitattributes.
+*.SLDPRT !filter !diff !merge -text
+*.SLDASM -text
+*.SLDDRW -text
+*.step   -text
+*.stp    -text

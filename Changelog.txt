@@ -1,3 +1,102 @@
+VEX CAD Library V1.1.1 + 2026-08-30 catalogue refresh
+
+2026-08-31 - Per-length files for C-Channel and Angle
+ The library keeps each cut-to-length metal as one part with a configuration
+ per hole count. Exploded those into standalone single-configuration parts,
+ one file per length:
+
+   VEX-Library-2026/Structure/<folder>/<master>/<holes> <master>.SLDPRT
+
+   Structure/C-Channel   5 masters   175 files   1-35 holes
+   Structure/Angle       4 masters   140 files   1-35 holes
+
+ 315 files. Naming follows the one file v1.1.1 already shipped this way,
+ "25 Aluminum 2 Wide C-Channel.SLDPRT". Every output was checked after
+ writing: its bounding box measures the expected holes x 0.5in. No failures.
+
+ Two outputs measured wrong, and the cause is upstream, not the export:
+ configuration "33" of Aluminum 2x2 Angle and Steel 2x2 Angle is 16.990in
+ long in the original v1.1.1 masters, where 33 x 0.5in is 16.500in. Config
+ 32 is 16.000 and 34 is 17.000, so only 33 is off. The generated files copy
+ the masters exactly and inherit the bad value. Left as-is rather than
+ silently diverging from the library; verify before cutting to it.
+
+ The masters were NOT modified - they keep their design table and all their
+ configurations, and remain the better choice for normal CAD work.
+
+ Each output is the master copied, opened on the wanted configuration, with
+ the design table dropped and every other configuration deleted. SolidWorks
+ has no "save this configuration as its own part" call, and a plain Save As
+ would carry every configuration into every file.
+
+ Still to do, with the traps worth knowing:
+   Structure/U-Channel               1 master    20 files   1-20, not 35
+   Structure/Chassis Rail            3 masters   85 files   25 / 25 / 35
+   Structure/Linear Slide            1 master    35 files
+   Structure/Plate                   2 masters  248 files   named "5x25"
+   Structure/0.25in Pitch Structure  3 masters  360 files   0.25in pitch
+
+ The plates are configured in two dimensions and named width x length in
+ holes, not by a plain hole count, so they need MAX_HOLES = 0 in the macro
+ or every one is skipped. The 0.25in Pitch parts are on a 0.25in hole
+ pitch, so their configuration N is N x 0.25in long, not N x 0.5in.
+
+ Nothing outside Structure needs this - every part in Hardware, Motion,
+ Wheels and Electronics is already single-configuration.
+
+ Added:
+  - Tools/ExplodeConfigsToFiles.swp.bas - the macro, resumable and logged
+  - Tools/src/SwExplodeConfigs.cs - the same thing as a standalone runner,
+    with --dry-run and --check
+  - Tools/src/SwInspect.cs - dumps a part's configurations, design table,
+    equations, dimensions and a size sample
+  - Tools/src/SwListConfigs.cs - configuration counts for a whole tree,
+    read off the files without opening them
+
+ Known limits:
+  - Every length is a full copy of the imported solid, so the two sets come
+    to about 2 GB. Doing the rest of Structure would roughly double that.
+  - Output file names are not zero-padded, matching the v1.1.1 precedent.
+
+2026-08-30 - Catalogue refresh (STEP)
+ The upstream VEX-CAD SolidWorks project never released after v1.1.1
+ (2023-02-17), so this refresh was pulled directly from VEX's own product
+ pages, where each part is published as a .step file.
+
+ Checked all 136 VEX V5 products on vexrobotics.com.
+ 289 unique STEP parts were available.
+
+ Added 108 parts that have no counterpart in v1.1.1, in VEX-STEP-2026/:
+      5  Electronics
+      1  Field
+     63  Hardware
+      2  Kits and Misc
+      4  Motion
+     15  Pneumatics
+     14  Structure
+      4  Wheels
+
+ Left out 181 STEP parts that duplicate parts already in the v1.1.1
+ library. For any part present in both, the original .SLDPRT is better - it
+ keeps configurations, mates and appearances, which STEP cannot carry.
+ The full omitted list is in NEW-PARTS-REPORT.md.
+
+ The original six library folders were NOT modified. No file was moved,
+ renamed or replaced, so existing assembly references still resolve.
+
+ Also added:
+  - Tools/ConvertStepToSldprt.swp.bas - resumable batch STEP -> SLDPRT macro
+  - Tools/README-CONVERSION.md - conversion instructions and import settings
+  - Tools/vex-v5-products.tsv - product ids for repeating this pull later
+  - NEW-PARTS-REPORT.md - full comparison against v1.1.1
+  - VEX-STEP-2026/PARTS-INDEX.md - index of the added parts
+
+ Known limits:
+  - Matching against v1.1.1 is by part NAME, not geometry. Renames and the
+    library's use of configurations for length variants make it approximate.
+  - Converted STEP parts are dumb solids: no feature tree, no configurations.
+
+----------------------------------------------------------------------------------------
 VEX CAD Library V1.1
 
 Check the FAQ here!
