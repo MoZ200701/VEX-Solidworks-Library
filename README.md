@@ -25,7 +25,9 @@ Changelog.txt        history
 
 **`VEX-Library-2026/` is the one you want.** It is the v1.1.1 library plus
 the 108 parts added since, merged into a single tree, with per-length files
-generated for the metals that have them (see below).
+generated for the metals that have them (see below). Everything in it is
+saved in the **SolidWorks 2026** file format — see the version note at the
+end before you clone it.
 
 The original six folders at the root are byte-for-byte as they shipped.
 Nothing was moved, renamed, or replaced — if you have robot assemblies
@@ -152,4 +154,23 @@ retry to classify.
 Original v1.1.1 SolidWorks library by **Owen (169E)** and **Ryan (4253B)**.
 STEP files are VEX Robotics'.
 
-NOTE: The original library is not backwards compatible before SolidWorks 2021-2022.
+## SolidWorks version
+
+**`VEX-Library-2026/` requires SolidWorks 2026 or newer.** Every file in it is
+saved at file version 19000 (2026).
+
+This is a one-way door. SolidWorks will not open a file written by a newer
+release, and there is no downgrade — so a 2025 or earlier seat cannot open
+these parts at all. If you are on an older seat, use the original folders at
+the repository root, which are untouched v1.1.1 (file version 14000, so
+SolidWorks 2021 and up).
+
+`Tools/src/SwUpgradeVersion.cs` is what did the conversion. It reads each
+file's saved-version list with `ISldWorks::VersionHistory` — which does not
+open the document — and skips anything already current, so re-running it is
+cheap and it never rewrites a file needlessly. Parts are converted before
+assemblies, so each part is upgraded once on its own rather than as a side
+effect of saving an assembly that references it.
+
+NOTE: The original root folders are not backwards compatible before
+SolidWorks 2021-2022.
